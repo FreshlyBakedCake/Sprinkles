@@ -1,0 +1,9 @@
+[package]
+name = "sprinkles"
+version = "0.0.0-alpha1"
+edition = "2024"
+
+[dependencies]
+dbus = "0.9.7"
+dbus-crossroads = "0.5.2"
+ormlite = { version = "0.23.3", features = ["sqlite"] }
