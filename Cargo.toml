@@ -4,6 +4,7 @@ version = "0.0.0-alpha1"
 edition = "2024"
 
 [dependencies]
-dbus = "0.9.7"
-dbus-crossroads = "0.5.2"
 ormlite = { version = "0.23.3", features = ["sqlite"] }
+tokio = { version = "1.45.1", features = ["full"] }
+zbus = { version = "5.7.1", features = ["tokio"] }
+zbus_notification = "0.3.6"

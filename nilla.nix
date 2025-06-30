@@ -25,7 +25,7 @@ nilla.create ({ config }: {
     packages.sprinkles = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      package = { fenix, makeRustPlatform, lib, installShellFiles, ... }:
+      package = { fenix, makeRustPlatform, lib, installShellFiles, dbus, ... }:
         let
           toolchain = fenix.complete.toolchain;
 
@@ -43,6 +43,7 @@ nilla.create ({ config }: {
 
           src = ./.;
 
+          buildInputs = [ dbus ];
           nativeBuildInputs = [ installShellFiles ];
 
           cargoLock.lockFile = ./Cargo.lock;
@@ -53,8 +54,9 @@ nilla.create ({ config }: {
     shells.sprinkles = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      shell = { mkShell, fenix, bacon, pkg-config, reuse, ... }:
+      shell = { mkShell, fenix, bacon, pkg-config, reuse, dbus, ... }:
         mkShell {
+          buildInputs = [ dbus ];
           packages = [
             (fenix.complete.withComponents [
               "cargo"
@@ -67,6 +69,7 @@ nilla.create ({ config }: {
             bacon
             pkg-config
             reuse
+            dbus
           ];
         };
     };
