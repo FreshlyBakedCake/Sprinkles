@@ -1,3 +1,4 @@
+#![feature(let_chains)]
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use zbus::{connection::Builder as ConnectionBuilder, interface as dbus_interface};
@@ -87,10 +88,10 @@ impl NotificationServer {
             expire_timeout,
         );
         let id: u32;
-        if self.notifications.contains_key(&replaces_id) {
+        if let Some(found_notification) = self.notifications.get_mut(&replaces_id)
+            && app_name == found_notification.dbus_notification.app_name {
             id = replaces_id;
-            self.notifications
-                .insert(id, Notification::new(id, notification));
+            *found_notification = Notification::new(id, notification);
         } else {
             id = self.last_id + 1;
             self.notifications
