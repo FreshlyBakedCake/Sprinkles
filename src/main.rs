@@ -97,13 +97,12 @@ impl NotificationServer {
                 .insert(id, Notification::new(id, notification));
             self.last_id = id;
         };
-        println!(
-            "Received notification (replacing: {replaces_id}) from {app_name}: {summary} - {body}",
-        );
-        println!("App Icon: {app_icon}");
-        println!("Actions: {actions:?}");
-        println!("Expires: {expire_timeout:?}");
-        // println!("Hints: {hints:?}");
+        self.notifications.iter().for_each(|(id, notification)| {
+            if !notification.closed {
+                println!("{id} {} - {}", notification.dbus_notification.app_name, notification.dbus_notification.summary);
+            }
+        });
+        println!("--------");
         return id;
     }
 
