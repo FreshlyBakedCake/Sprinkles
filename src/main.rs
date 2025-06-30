@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use zbus::{connection::Builder as ConnectionBuilder, interface as dbus_interface};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct DBusNotification {
     app_name: String,
     replaces_id: u32,
@@ -45,6 +45,7 @@ impl DBusNotification {
 struct Notification {
     dbus_notification: DBusNotification,
     id: u32,
+    closed: bool,
 }
 
 impl Notification {
@@ -52,6 +53,7 @@ impl Notification {
         Self {
             dbus_notification,
             id,
+            closed: false,
         }
     }
 }
@@ -105,7 +107,11 @@ impl NotificationServer {
         return id;
     }
 
-    async fn close_notification(&mut self, _id: u32) {}
+    async fn close_notification(&mut self, id: u32) {
+        if let Some(notification) = self.notifications.get_mut(&id) {
+            notification.closed = true;
+        }
+    }
 
     async fn get_capabilities(&self) -> Vec<String> {
         vec!["body".to_string(), "actions".to_string()]
