@@ -54,7 +54,7 @@ nilla.create ({ config }: {
     shells.sprinkles = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      shell = { mkShell, fenix, bacon, pkg-config, reuse, dbus, ... }:
+      shell = { mkShell, fenix, bacon, pkg-config, reuse, dbus, sqlx-cli, ... }:
         mkShell {
           buildInputs = [ dbus ];
           packages = [
@@ -66,10 +66,22 @@ nilla.create ({ config }: {
               "rustfmt"
               "rust-analyzer"
             ])
+            sqlx-cli
             bacon
             pkg-config
             reuse
             dbus
+          ];
+        };
+    };
+    shells.libnotify = {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+
+      shell = { mkShell, libnotify, ... }:
+        mkShell {
+          buildInputs = [ libnotify ];
+          packages = [
+            libnotify
           ];
         };
     };
