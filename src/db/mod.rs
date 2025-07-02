@@ -80,49 +80,57 @@ impl DB {
             .execute(&mut self.connection)
             .await?;
         }
-
-        let notification: tables::Notification = if replaces_id == 0 {
-            sqlx::query_as(
-                "
+        let count = sqlx::query_as::<_, intermediates::Count>(
+            "
+                        SELECT COUNT(id) as count FROM notifications
+                        ",
+        )
+        .fetch_one(&mut self.connection)
+        .await?
+        .count;
+        let notification: tables::Notification =
+            if replaces_id == 0 || count == 0 || replaces_id > count {
+                sqlx::query_as(
+                    "
                 INSERT INTO notifications
                 (dbus_notification_id)
                 VALUES (?)
                 RETURNING *",
-            )
-            .bind(dbus_notification.id)
-            .fetch_one(&mut self.connection)
-            .await?
-        } else {
-            let n_returned: intermediates::ReturnedNotification = sqlx::query_as(
-                "
+                )
+                .bind(dbus_notification.id)
+                .fetch_one(&mut self.connection)
+                .await?
+            } else {
+                let n_returned: intermediates::ReturnedNotification = sqlx::query_as(
+                    "
                 SELECT id, dbus_notification_id FROM notifications WHERE id = ?
                 ",
-            )
-            .bind(replaces_id)
-            .fetch_one(&mut self.connection)
-            .await?;
-            sqlx::query(
-                "
+                )
+                .bind(replaces_id)
+                .fetch_one(&mut self.connection)
+                .await?;
+                sqlx::query(
+                    "
                 INSERT INTO previous_dbus_notifications (id, dbus_notification_id, notification_id)
                 VALUES (?, ?, ?)",
-            )
-            .bind(uuid::Uuid::new_v4())
-            .bind(n_returned.dbus_notification_id)
-            .bind(n_returned.id)
-            .execute(&mut self.connection)
-            .await?;
-            sqlx::query_as(
-                "
+                )
+                .bind(uuid::Uuid::new_v4())
+                .bind(n_returned.dbus_notification_id)
+                .bind(n_returned.id)
+                .execute(&mut self.connection)
+                .await?;
+                sqlx::query_as(
+                    "
                 UPDATE notifications
                 SET dbus_notification_id = ?
                 WHERE id = ?
                 RETURNING *",
-            )
-            .bind(dbus_notification.id)
-            .bind(replaces_id)
-            .fetch_one(&mut self.connection)
-            .await?
-        };
+                )
+                .bind(dbus_notification.id)
+                .bind(replaces_id)
+                .fetch_one(&mut self.connection)
+                .await?
+            };
 
         Ok(notification)
     }
