@@ -64,7 +64,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap()
         .create_if_missing(true);
 
-    let db = db::DB::new(sqlx::sqlite::SqliteConnection::connect_with(&db_opts).await?);
+    let db = db::DB::new(sqlx::sqlite::SqliteConnection::connect_with(&db_opts).await?).await;
 
     let notification_server = NotificationServer { database: db };
 

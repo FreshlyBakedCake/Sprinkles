@@ -8,7 +8,8 @@ pub struct DB {
 }
 
 impl DB {
-    pub fn new(connection: sqlx::sqlite::SqliteConnection) -> Self {
+    pub async fn new(mut connection: sqlx::sqlite::SqliteConnection) -> Self {
+        sqlx::migrate!().run(&mut connection).await.unwrap();
         DB { connection }
     }
 
