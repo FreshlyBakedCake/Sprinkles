@@ -74,14 +74,15 @@ nilla.create ({ config }: {
           ];
         };
     };
-    shells.libnotify = {
+    shells.testing = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      shell = { mkShell, libnotify, ... }:
+      shell = { mkShell, libnotify, sqlitebrowser, ... }:
         mkShell {
           buildInputs = [ libnotify ];
           packages = [
             libnotify
+            sqlitebrowser
           ];
         };
     };
