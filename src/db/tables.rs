@@ -40,4 +40,5 @@ pub struct PreviousDbusNotification {
     pub id: Uuid,
     pub notification_id: u32,
     pub dbus_notification_id: Uuid,
+    pub idx: u32,
 }

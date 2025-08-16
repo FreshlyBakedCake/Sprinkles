@@ -31,5 +31,6 @@ CREATE TABLE notification_hints (
 CREATE TABLE previous_dbus_notifications (
     id STRING PRIMARY KEY,
     dbus_notification_id STRING REFERENCES dbus_notifications (id),
-    notification_id INTEGER REFERENCES notifications (id)
+    notification_id INTEGER REFERENCES notifications (id),
+    idx INTEGER NOT NULL
 );
