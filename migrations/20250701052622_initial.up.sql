@@ -24,7 +24,7 @@ CREATE TABLE notification_actions (
 CREATE TABLE notification_hints (
     id STRING PRIMARY KEY,
     dbus_notification_id STRING REFERENCES dbus_notifications (id),
-    hint TEXT NOT NULL,
+    k TEXT NOT NULL,
     value TEXT NOT NULL
 );
 

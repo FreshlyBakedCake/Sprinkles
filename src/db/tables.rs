@@ -31,7 +31,7 @@ pub struct NotificationAction {
 pub struct NotificationHint {
     pub id: Uuid,
     pub dbus_notification_id: Uuid,
-    pub key: String,
+    pub k: String,
     pub value: String,
 }
 
