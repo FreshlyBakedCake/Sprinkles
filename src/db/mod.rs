@@ -176,6 +176,7 @@ SELECT
         hints: HashMap<&str, zbus::zvariant::Value<'_>>,
         expire_timeout: i32,
     ) -> Result<tables::Notification, sqlx::Error> {
+        let mut tx = self.connection.begin().await?;
         let dbus_notification: tables::DBusNotification = sqlx::query_as(
             "INSERT INTO dbus_notifications
             (id, app_name, replaces_id, app_icon, summary, body, expire_timeout)
@@ -194,7 +195,7 @@ SELECT
         .bind(summary)
         .bind(body)
         .bind(expire_timeout)
-        .fetch_one(&mut self.connection)
+        .fetch_one(&mut *tx)
         .await?;
 
         for item in actions {
@@ -207,7 +208,7 @@ SELECT
             .bind(uuid::Uuid::new_v4())
             .bind(dbus_notification.id)
             .bind(item)
-            .execute(&mut self.connection)
+            .execute(&mut *tx)
             .await?;
         }
 
@@ -222,7 +223,7 @@ SELECT
             .bind(dbus_notification.id)
             .bind(key)
             .bind(value.to_string())
-            .execute(&mut self.connection)
+            .execute(&mut *tx)
             .await?;
         }
         let count = sqlx::query_as::<_, intermediates::Count>(
@@ -230,9 +231,10 @@ SELECT
                         SELECT COUNT(id) as count FROM notifications
                         ",
         )
-        .fetch_one(&mut self.connection)
+        .fetch_one(&mut *tx)
         .await?
         .count;
+
         let notification: tables::Notification = if replaces_id == 0
             || count == 0
             || replaces_id > count
@@ -245,7 +247,7 @@ SELECT
                 RETURNING *",
             )
             .bind(dbus_notification.id)
-            .fetch_one(&mut self.connection)
+            .fetch_one(&mut *tx)
             .await?
         } else {
             let n_returned: intermediates::ReturnedNotification = sqlx::query_as(
@@ -254,7 +256,7 @@ SELECT
                 ",
             )
             .bind(replaces_id)
-            .fetch_one(&mut self.connection)
+            .fetch_one(&mut *tx)
             .await?;
 
             let prev_num = sqlx::query_as::<_, intermediates::Count>(
@@ -264,7 +266,7 @@ SELECT
                     ",
             )
             .bind(n_returned.id)
-            .fetch_one(&mut self.connection)
+            .fetch_one(&mut *tx)
             .await?
             .count;
 
@@ -277,7 +279,7 @@ SELECT
                 .bind(n_returned.dbus_notification_id)
                 .bind(n_returned.id)
                 .bind(prev_num)
-                .execute(&mut self.connection)
+                .execute(&mut *tx)
                 .await?;
             sqlx::query_as(
                 "
@@ -288,9 +290,10 @@ SELECT
             )
             .bind(dbus_notification.id)
             .bind(replaces_id)
-            .fetch_one(&mut self.connection)
+            .fetch_one(&mut *tx)
             .await?
         };
+        tx.commit().await?;
 
         Ok(notification)
     }
