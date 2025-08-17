@@ -19,6 +19,9 @@ pub enum Commands {
 #[derive(Subcommand)]
 pub enum NotificationSubcommand {
     Server,
+    Close {
+        notification_id: u32,
+    },
     Query {
         query: String,
         #[arg(long, conflicts_with = "raw", action = ArgAction::SetTrue, default_value_t = false)]

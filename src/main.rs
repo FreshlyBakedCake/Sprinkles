@@ -27,6 +27,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("{}", serde_json::to_string(&notifications).unwrap());
                 Ok(())
             }
+            cli::NotificationSubcommand::Close { notification_id } => {
+                let mut database = db::DB::default().await;
+                database.close_notification(notification_id).await;
+                Ok(())
+            }
         },
     }
 }
