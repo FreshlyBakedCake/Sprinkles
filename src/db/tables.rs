@@ -17,7 +17,7 @@ pub struct DBusNotification {
 pub struct Notification {
     pub id: u32,
     pub dbus_notification_id: Uuid,
-    pub closed: bool,
+    pub read: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]

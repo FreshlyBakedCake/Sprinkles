@@ -325,7 +325,7 @@ mod tests {
     #[test]
     fn basic_and() {
         let (sql, params) = parse_query("{urgent = 1} & unread()").unwrap();
-        assert_eq!(sql, "(urgent = ? AND closed = 0)");
+        assert_eq!(sql, "(EXISTS ( SELECT 1 FROM dbus_notifications d WHERE d.id = dbus_notification_id AND d.urgent = ? ) AND closed = 0)");
         assert_eq!(params, vec!["1"]);
     }
 

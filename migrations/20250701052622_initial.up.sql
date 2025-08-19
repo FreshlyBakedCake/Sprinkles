@@ -12,12 +12,12 @@ CREATE TABLE dbus_notifications (
 CREATE TABLE notifications (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     dbus_notification_id STRING REFERENCES dbus_notifications (id),
-    closed BOOLEAN NOT NULL DEFAULT FALSE
+    read BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE notification_actions (
     id STRING PRIMARY KEY,
-    dbus_notification_id INTEGER REFERENCES notifications (id),
+    dbus_notification_id INTEGER REFERENCES dbus_notifications (id),
     action TEXT NOT NULL
 );
 

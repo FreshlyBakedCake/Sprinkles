@@ -47,6 +47,6 @@ pub struct ParsedDBusNotification {
 pub struct ParsedNotification {
     pub id: u32,
     pub dbus_notification: ParsedDBusNotification,
-    pub closed: bool,
+    pub read: bool,
     pub history: Vec<ParsedDBusNotification>,
 }
