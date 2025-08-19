@@ -3,12 +3,11 @@ let
 
   nilla = import pins.nilla;
 in
-nilla.create ({ config }: {
+nilla.create ({ config, lib }: {
   config = {
     inputs = {
-      fenix = {
-        src = pins.fenix;
-      };
+      fenix.src = pins.fenix;
+      quickshell.src = pins.quickshell;
 
       nixpkgs = {
         src = pins.nixpkgs;
@@ -54,10 +53,22 @@ nilla.create ({ config }: {
     shells.sprinkles = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      shell = { mkShell, fenix, bacon, pkg-config, reuse, dbus, sqlx-cli, ... }:
+      shell = { mkShell, kdePackages, fenix, bacon, pkg-config, reuse, dbus, sqlx-cli, system, ... }:
         mkShell {
+          QML_IMPORT_PATH =
+            lib.fp.pipe
+              [
+                (map (pkg: "${pkg}/lib/qt-6/qml"))
+                (builtins.concatStringsSep ":")
+              ]
+              [
+                (config.inputs.quickshell.result.packages.${system}.default.override { gitRev=pins.quickshell.revision; })
+                kdePackages.qtdeclarative
+              ];
+
           buildInputs = [ dbus ];
           packages = [
+            kdePackages.qtdeclarative
             (fenix.complete.withComponents [
               "cargo"
               "clippy"
@@ -77,12 +88,14 @@ nilla.create ({ config }: {
     shells.testing = {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      shell = { mkShell, libnotify, sqlitebrowser, ... }:
+      shell = { mkShell, libnotify, sqlitebrowser, system, ... }:
         mkShell {
           buildInputs = [ libnotify ];
           packages = [
             libnotify
             sqlitebrowser
+            config.packages.default.result.${system}
+            (config.inputs.quickshell.result.packages.${system}.default.override { gitRev=pins.quickshell.revision; })
           ];
         };
     };
