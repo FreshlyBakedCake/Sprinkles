@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+//
+// SPDX-License-Identifier: MIT
+
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;

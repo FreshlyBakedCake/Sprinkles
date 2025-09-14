@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+//
+// SPDX-License-Identifier: MIT
+
 use serde::{Deserialize, Deserializer, de::DeserializeOwned};
 use serde_json::{Value, from_value};
 use sqlx::FromRow;

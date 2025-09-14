@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+--
+-- SPDX-License-Identifier: MIT
+
 WITH nid AS (
     SELECT id, dbus_notification_id, closed
     FROM notifications

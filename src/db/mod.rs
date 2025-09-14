@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+//
+// SPDX-License-Identifier: MIT
+
 use intermediates::ParsedNotification;
 use sqlx::{Connection, Row};
 use std::collections::HashMap;

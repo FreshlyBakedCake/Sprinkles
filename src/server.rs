@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+//
+// SPDX-License-Identifier: MIT
+
 use zbus::{connection::Builder as ConnectionBuilder, interface as dbus_interface};
 
 pub struct NotificationServer {

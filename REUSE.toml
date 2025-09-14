@@ -1,0 +1,6 @@
+version = 1
+
+[[annotations]]
+path = "migrations/*"
+SPDX-FileCopyrightText = "2025 FreshlyBakedCake"
+SPDX-License-Identifier = "MIT"

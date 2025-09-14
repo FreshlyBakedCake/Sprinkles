@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 FreshlyBakedCake
+//
+// SPDX-License-Identifier: MIT
+
 use std::collections::VecDeque;
 
 #[derive(Debug, Clone, PartialEq)]
