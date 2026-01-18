@@ -9,7 +9,8 @@
 }:
 {
   config = {
-    packages.default = config.packages.sprinkles;
+    name = "sprinkles";
+
     packages.sprinkles = {
       systems = [
         "x86_64-linux"
@@ -49,7 +50,6 @@
         };
     };
 
-    shells.default = config.shells.sprinkles;
     shells.sprinkles = {
       systems = [
         "x86_64-linux"
@@ -102,7 +102,8 @@
           ];
         };
     };
-    shells.testing = {
+
+    shells.sprinkles-testing = {
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -121,7 +122,7 @@
           packages = [
             libnotify
             sqlitebrowser
-            config.packages.default.result.${system}
+            config.packages.sprinkles.result.${system}
             (config.inputs.quickshell.result.packages.${system}.default.override {
               gitRev = pins.quickshell.revision;
             })
