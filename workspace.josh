@@ -1,4 +1,6 @@
 ::LICENSES/
+dependencies/lib = :/lib
+dependencies/nilla = :/nilla
 ::npins/
 ::nilla.nix=projects/nilla.nix
 ::workspace.josh.license=projects/packetmix/workspace.josh.license
